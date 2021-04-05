@@ -289,7 +289,7 @@ async function jsMinify(file, fromJsDst = true) {
   })
 }
 async function jsMinifyAll() {
-  fs.mkdirSync(jsDst)
+  fs.existsSync(jsDst) === false && fs.mkdirSync(jsDst)
   console.log(chalk.gray('Minifying'), chalk.cyan(join(jsDst, '*.js')))
 
   const start = new Date()
