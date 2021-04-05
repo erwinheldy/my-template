@@ -16,7 +16,7 @@ const autoprefixer = require('autoprefixer')
 const { parseHTML } = require('linkedom')
 const { resolve, extname, basename, join, parse } = require('path')
 
-const systemConfig = require(resolve('config.js'))
+const systemConfig = require(join(__dirname, 'config.js'))
 const customConfig = fs.existsSync(systemConfig.customConfig) ? require(resolve(systemConfig.customConfig)) : {}
 const config = merge(systemConfig, customConfig)
 
@@ -289,6 +289,7 @@ async function jsMinify(file, fromJsDst = true) {
   })
 }
 async function jsMinifyAll() {
+  fs.mkdirSync(jsDst)
   console.log(chalk.gray('Minifying'), chalk.cyan(join(jsDst, '*.js')))
 
   const start = new Date()

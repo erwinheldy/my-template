@@ -2,7 +2,7 @@
 my template build tools
 
 ## Installation
-`npm i my-template`
+`npm i @erwinheldy/my-template --save-dev`
 
 ## Features
 - ejs template
