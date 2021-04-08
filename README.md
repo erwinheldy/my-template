@@ -10,6 +10,7 @@ my template build tools
 - autoprefixer
 - watch & live reload
 - libraries copier
+- options to use sass(js) or dart-sass
 
 ## Commands
 package.json:
@@ -48,7 +49,8 @@ module.exports = {
     open: false,
     watch: 'dist',
     logLevel: 0,
-  }
+  },
+  useDartSass: false
 }
 ```
 ## Example libraries
