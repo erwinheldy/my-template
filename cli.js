@@ -2,8 +2,10 @@
 
 const fs = require('fs')
 const ejs = require('ejs')
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
 const csso = require('csso')
-const sass = require('node-sass')
+const sass = require('sass')
 const chalk = require('chalk')
 const merge = require('lodash.merge')
 const terser = require('terser')
@@ -128,22 +130,26 @@ async function htmlBeautifyAll() {
 
 
 async function css(file, elapsed = true) {
-  return await new Promise(resolve => {
+  return await new Promise(async resolve => {
     const src = join(cssSrc, file)
     const dst = join(cssDst, toExt(file, '.css'))
 
     console.log(chalk.gray('Compiling'), chalk.cyan(src), 'to', chalk.cyan(dst))
 
     const start = elapsed ? new Date() : 0
-    const result = sass.renderSync({
-      file: src,
-      outputStyle: 'expanded',
-      sourceMap: true,
-      outFile: dst,
-    })
+    if (config.useDartSass) {
+      await exec(`sass --source-map --embed-sources ${src} ${dst}`).catch(err => console.log(chalk.red(err.stderr)))
+    }
+    else {
+      const result = sass.renderSync({
+        file: src,
+        sourceMap: true,
+        outFile: dst,
+      })
 
-    fs.writeFileSync(dst, result.css)
-    fs.writeFileSync(dst + '.map', result.map)
+      fs.writeFileSync(dst, result.css)
+      fs.writeFileSync(dst + '.map', result.map)
+    }
 
     elapsed && doneIn(start)
     resolve()
