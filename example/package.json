@@ -5,7 +5,7 @@
     "libraries": "my-template --lib"
   },
   "devDependencies": {
-    "@erwinheldy/my-template": "^1.0.4"
+    "@erwinheldy/my-template": "^1.0.5"
   },
   "dependencies": {
     "bootstrap": "^4.6.0",
