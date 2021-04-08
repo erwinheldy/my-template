@@ -19,5 +19,6 @@ module.exports = {
     watch: 'dist',
     logLevel: 0,
   },
+  useDartSass: false,
   customConfig: 'my-template.js'
 }
