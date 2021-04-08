@@ -138,9 +138,11 @@ async function css(file, elapsed = true) {
 
     const start = elapsed ? new Date() : 0
     if (config.useDartSass) {
+      await toggleSassJs(false)
       await exec(`sass --source-map --embed-sources ${src} ${dst}`).catch(err => console.log(chalk.red(err.stderr)))
     }
     else {
+      await toggleSassJs(true)
       const result = sass.renderSync({
         file: src,
         sourceMap: true,
@@ -354,6 +356,28 @@ async function libMinifyJs(dst) {
     resolve()
   })
 }
+
+
+async function toggleSassJs(enable) {
+  return await new Promise(resolve => {
+    const bin = join('node_modules', '.bin')
+    const sassBin = join(bin, 'sass')
+    const sassCmd = join(bin, 'sass.cmd')
+    const _sassBin = join(bin, '_sass')
+    const _sassCmd = join(bin, '_sass.cmd')
+
+    if (enable) {
+      fs.existsSync(_sassBin) && fs.renameSync(_sassBin, sassBin)
+      fs.existsSync(_sassCmd) && fs.renameSync(_sassCmd, sassCmd)
+    }
+    else {
+      fs.existsSync(sassBin) && fs.renameSync(sassBin, _sassBin)
+      fs.existsSync(sassCmd) && fs.renameSync(sassCmd, _sassCmd)
+    }
+    resolve()
+  })
+}
+
 
 void (async () => {
 
