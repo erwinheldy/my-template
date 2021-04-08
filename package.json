@@ -1,6 +1,6 @@
 {
   "name": "@erwinheldy/my-template",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "index.js",
   "repository": "https://github.com/erwinheldy/my-template.git",
   "author": "Erwin Heldy G <erwin.developer@gmail.com>",
@@ -17,8 +17,8 @@
     "linkedom": "^0.6.2",
     "live-server": "^1.2.1",
     "lodash.merge": "^4.6.2",
-    "node-sass": "^5.0.0",
     "postcss": "^8.2.9",
+    "sass": "^1.32.8",
     "terser": "^5.6.1"
   }
 }
