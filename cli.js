@@ -16,7 +16,7 @@ const chokidar = require('chokidar')
 const beautify = require('js-beautify').html
 const autoprefixer = require('autoprefixer')
 const { parseHTML } = require('linkedom')
-const { resolve, extname, basename, join, parse } = require('path')
+const { resolve, extname, basename, join, parse, posix } = require('path')
 
 const systemConfig = require(join(__dirname, 'config.js'))
 const customConfig = fs.existsSync(systemConfig.customConfig) ? require(resolve(systemConfig.customConfig)) : {}
@@ -337,21 +337,21 @@ async function libCopy(libs, dst) {
 }
 async function libAutoprefixCss(dst) {
   return await new Promise(async resolve => {
-    const files = await globby(join(dst, '**', '*.css'))
+    const files = await globby(posix.join(dst, '**', '*.css'))
     await Promise.all(files.map(file => cssAutoprefix(file, false)))
     resolve()
   })
 }
 async function libMinifyCss(dst) {
   return await new Promise(async resolve => {
-    const files = await globby([join(dst, '**', '*.css'), join('!' + dst, '**', '*.min.css')])
+    const files = await globby([posix.join(dst, '**', '*.css'), posix.join('!' + dst, '**', '*.min.css')])
     await Promise.all(files.map(file => cssMinify(file, false)))
     resolve()
   })
 }
 async function libMinifyJs(dst) {
   return await new Promise(async resolve => {
-    const files = await globby([join(dst, '**', '*.js'), join('!' + dst, '**', '*.min.js')])
+    const files = await globby([posix.join(dst, '**', '*.js'), posix.join('!' + dst, '**', '*.min.js')])
     await Promise.all(files.map(file => jsMinify(file, false)))
     resolve()
   })
