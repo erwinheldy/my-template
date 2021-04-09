@@ -20,5 +20,5 @@ module.exports = {
     logLevel: 0,
   },
   useDartSass: false,
-  customConfig: 'my-template.js'
+  customConfig: 'my-template.config.js'
 }
