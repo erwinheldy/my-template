@@ -2,7 +2,7 @@
 my template build tools
 
 ## Installation
-`npm i @erwinheldy/my-template --save-dev`
+`npm i @erwinheldy/my-template`
 
 ## Features
 - ejs template
@@ -27,7 +27,7 @@ package.json:
 `npm run libraries`
 
 ## Default configuration
-my-template.js:
+my-template.config.js:
 ```javascript
 module.exports = {
   path: {

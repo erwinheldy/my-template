@@ -6,17 +6,17 @@ const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 const csso = require('csso')
 const sass = require('sass')
-const chalk = require('chalk')
 const merge = require('lodash.merge')
 const terser = require('terser')
 const globby = require('globby')
-const server = require('live-server')
+const server = require('slive-server')
 const postcss = require('postcss')
 const chokidar = require('chokidar')
 const beautify = require('js-beautify').html
 const autoprefixer = require('autoprefixer')
 const { parseHTML } = require('linkedom')
 const { resolve, extname, basename, join, parse, posix } = require('path')
+require('colors')
 
 const systemConfig = require(join(__dirname, 'config.js'))
 const customConfig = fs.existsSync(systemConfig.customConfig) ? require(resolve(systemConfig.customConfig)) : {}
@@ -40,7 +40,7 @@ function files(dir, ext) {
     .filter(i => extname(i) === '.' + ext && i.startsWith('_') === false)
 }
 function doneIn(start) {
-  console.log(chalk.blue('Done in'), new Date() - start, 'ms\n')
+  console.log('Done in'.blue, new Date() - start, 'ms\n')
 }
 function argv(key) {
   const arg = process.argv.filter(val => val.startsWith('--' + key))
@@ -73,7 +73,7 @@ async function html(file, elapsed = true) {
     const src = join(htmlSrc, file)
     const dst = join(htmlDst, toExt(file, '.html'))
 
-    console.log(chalk.gray('Compiling'), chalk.cyan(src), 'to', chalk.cyan(dst))
+    console.log('Compiling'.gray, src.cyan, 'to', dst.cyan)
 
     const start = elapsed ? new Date() : 0
     const result = await ejs.renderFile(src, JSON.parse(fs.readFileSync(htmlData, 'utf-8')))
@@ -121,7 +121,7 @@ async function htmlBeautify(file) {
   })
 }
 async function htmlBeautifyAll() {
-  console.log(chalk.gray('Beautifying'), chalk.cyan(join(htmlDst, '*.html')))
+  console.log('Beautifying'.gray, join(htmlDst, '*.html').cyan)
 
   const start = new Date()
   await Promise.all(files(htmlDst, 'html').map(htmlBeautify))
@@ -134,12 +134,12 @@ async function css(file, elapsed = true) {
     const src = join(cssSrc, file)
     const dst = join(cssDst, toExt(file, '.css'))
 
-    console.log(chalk.gray('Compiling'), chalk.cyan(src), 'to', chalk.cyan(dst))
+    console.log('Compiling'.gray, src.cyan, 'to', dst.cyan)
 
     const start = elapsed ? new Date() : 0
     if (config.useDartSass) {
       await toggleSassJs(false)
-      await exec(`sass --source-map --embed-sources ${src} ${dst}`).catch(err => console.log(chalk.red(err.stderr)))
+      await exec(`sass --source-map --embed-sources ${src} ${dst}`).catch(err => console.log(err.stderr))
     }
     else {
       await toggleSassJs(true)
@@ -215,7 +215,7 @@ async function cssMinify(file, fromCssDst = true) {
   })
 }
 async function cssAutoprefixMinify() {
-  console.log(chalk.gray('Autoprefixing & Minifying'), chalk.cyan(join(cssDst, '*.css')))
+  console.log('Autoprefixing & Minifying'.gray, join(cssDst, '*.css').cyan)
 
   const start = new Date()
   const cssFiles = files(cssDst, 'css').filter(i => i.slice(i.length - 8) !== '.min.css')
@@ -273,7 +273,7 @@ async function setAsset(file, minified = true) {
   })
 }
 async function setAssetAll(minified = true) {
-  console.log(chalk.gray('Adjusting assets'), chalk.cyan(join(htmlDst, '*.html')))
+  console.log('Adjusting assets'.gray, join(htmlDst, '*.html').cyan)
 
   const start = new Date()
   await Promise.all(files(htmlDst, 'html').map(file => setAsset(file, minified)))
@@ -298,7 +298,7 @@ async function jsMinify(file, fromJsDst = true) {
 }
 async function jsMinifyAll() {
   fs.existsSync(jsDst) === false && fs.mkdirSync(jsDst)
-  console.log(chalk.gray('Minifying'), chalk.cyan(join(jsDst, '*.js')))
+  console.log('Minifying'.gray,join(jsDst, '*.js').cyan)
 
   const start = new Date()
   const jsFiles = files(jsDst, 'js').filter(i => i.slice(i.length - 7) !== '.min.js')
@@ -311,16 +311,16 @@ async function lib() {
   const lib = require(resolve('my-template.libraries.js'))
   fs.rmdirSync(lib.dst, { recursive: true })
 
-  console.log(chalk.gray('Copying libraries to'), chalk.cyan(join(lib.dst)))
+  console.log('Copying libraries to'.gray, join(lib.dst).cyan)
   await libCopy(lib.lib, lib.dst)
 
-  console.log(chalk.gray('Autoprefixing css files from'), chalk.cyan(join(lib.dst)))
+  console.log('Autoprefixing css files from'.gray, join(lib.dst).cyan)
   await libAutoprefixCss(lib.dst)
 
-  console.log(chalk.gray('Minifying css files from'), chalk.cyan(join(lib.dst)))
+  console.log('Minifying css files from'.gray, join(lib.dst).cyan)
   await libMinifyCss(lib.dst)
 
-  console.log(chalk.gray('Minifying js files from'), chalk.cyan(join(lib.dst)))
+  console.log('Minifying js files from'.gray, join(lib.dst).cyan)
   await libMinifyJs(lib.dst)
 }
 async function libCopy(libs, dst) {
@@ -406,8 +406,7 @@ void (async () => {
       }, delay)
     })
     server.start(config.server)
-    console.log(chalk.green(`Serving at http://${config.server.host}:${config.server.port}`))
-    console.log(chalk.blue('Ready for changes\n'))
+    console.log('Ready for changes\n'.blue)
   }
   else if (argv('lib')) {
     const start = new Date()
@@ -424,7 +423,7 @@ void (async () => {
     await cssAutoprefixMinify()
     await jsMinifyAll()
 
-    console.log(chalk.green('Build finished in'), new Date() - start, 'ms\n')
+    console.log('Build finished in'.green, new Date() - start, 'ms\n')
   }
 
 })()
