@@ -46,9 +46,8 @@ module.exports = {
   server: {
     host: '127.0.0.1',
     port: 3000,
-    open: false,
     watch: 'dist',
-    logLevel: 0,
+    verbose: false,
   },
   useDartSass: false
 }
